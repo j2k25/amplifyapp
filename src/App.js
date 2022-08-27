@@ -51,7 +51,11 @@ function App() {
   }
   
   
-  
+  async function deleteTodo({ id }) {
+    const newNotesArray = notes.filter(note => note.id !== id);
+    setNotes(newNotesArray);
+    await API.graphql({ query: deleteNoteMutation, variables: { input: { id } }});
+  }
   
   
   
@@ -68,11 +72,7 @@ function App() {
     setFormData(initialFormState);
   }
 
-  async function deleteTodo({ id }) {
-    const newNotesArray = notes.filter(note => note.id !== id);
-    setNotes(newNotesArray);
-    await API.graphql({ query: deleteNoteMutation, variables: { input: { id } }});
-  }
+
 */
 
   return (
