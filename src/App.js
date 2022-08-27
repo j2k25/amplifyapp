@@ -76,8 +76,9 @@ function App() {
 */
 
   return (
-  	
+
     <div className="App">
+	  <img src={logo} className="App-logo" alt="logo" />
       <h1>My Notes App</h1>
 	  <input
         type="file"
@@ -100,10 +101,10 @@ function App() {
             <div key={note.id || note.name}>
               <h2>{note.name}</h2>
               <p>{note.description}</p>
-              <button onClick={() => deleteTodo(note)}>Delete note</button>
+              <button onClick={() => deleteTodo(note)}>Delete note</button>	
 			  {
 				note.image && <img src={note.image} style={{width: 400}} />
-			  }
+			  }		  
             </div>
           ))
         }
