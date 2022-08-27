@@ -1,11 +1,21 @@
+/*
+import React, { useState, useEffect } from 'react'; 
+import './App.css'; 
+import { API } from 'aws-amplify'; 
+import { withAuthenticator } from '@aws-amplify/ui-react'; 
+import { listNotes } from './graphql/queries'; 
+import { createNote as createNoteMutation, deleteNote as deleteNoteMutation } from './graphql/mutations';
+*/
+
 import logo from "./logo.svg";
 import React, { useState, useEffect } from 'react';
 import './App.css';
 import { API } from 'aws-amplify';
-import { withAuthenticator, Authenticator } from '@aws-amplify/ui-react';
+import { withAuthenticator } from '@aws-amplify/ui-react';
 import { listTodos } from './graphql/queries';
 import { createTodo as createNoteMutation, deleteTodo as deleteNoteMutation } from './graphql/mutations';
-import { Storage } from 'aws-amplify'; // { API, Storage }
+import { Storage } from 'aws-amplify'; 
+
 
 const initialFormState = { name: '', description: '' }
 
@@ -71,10 +81,11 @@ function App() {
     setNotes([ ...notes, formData ]);
     setFormData(initialFormState);
   }
-
-
 */
 
+
+
+//---------------------------------------------
   return (
 
     <div className="App">
@@ -109,12 +120,22 @@ function App() {
           ))
         }
       </div>
-      <Authenticator />
+      <withAuthenticator />
     </div>
   );
 }
 
 export default withAuthenticator(App);
+
+
+/*
+import React, { useState, useEffect } from 'react'; 
+import './App.css'; import { API } from 'aws-amplify'; 
+import { withAuthenticator } from '@aws-amplify/ui-react'; 
+import { listNotes } from './graphql/queries'; 
+import { createNote as createNoteMutation, deleteNote as deleteNoteMutation } from './graphql/mutations';
+*/
+
 
 
 
