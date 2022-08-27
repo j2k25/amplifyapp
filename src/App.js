@@ -8,10 +8,22 @@ import { createNote as createNoteMutation, deleteNote as deleteNoteMutation } fr
 */
 
 import logo from "./logo.svg";
+import "@aws-amplify/ui-react/styles.css";
+/*
+import {
+  //withAuthenticator,
+  Button,
+  Heading,
+  Image,
+  View,
+  Card,
+} from "@aws-amplify/ui-react";*/
+
 import React, { useState, useEffect } from 'react';
 import './App.css';
 import { API } from 'aws-amplify';
-import { withAuthenticator } from '@aws-amplify/ui-react';
+import { withAuthenticator, AmplifySignOut } from '@aws-amplify/ui-react-v1';
+//import { withAuthenticator } from '@aws-amplify/ui-react';
 import { listTodos } from './graphql/queries';
 import { createTodo as createNoteMutation, deleteTodo as deleteNoteMutation } from './graphql/mutations';
 import { Storage } from 'aws-amplify'; 
@@ -19,7 +31,7 @@ import { Storage } from 'aws-amplify';
 
 const initialFormState = { name: '', description: '' }
 
-function App() {
+function App({ signOut }) {
   const [notes, setNotes] = useState([]);
   const [formData, setFormData] = useState(initialFormState);
 
@@ -35,6 +47,11 @@ function App() {
 	fetchNotes();
   }	
 	
+  /*
+  async function fetchNotes() {
+    const apiData = await API.graphql({ query: listTodos });
+  setNotes(apiData.data.listTodos.items);}*/
+  
   async function fetchNotes() {
 	const apiData = await API.graphql({ query: listTodos });
 	const notesFromAPI = apiData.data.listTodos.items;
@@ -48,7 +65,13 @@ function App() {
 	setNotes(apiData.data.listTodos.items);
   }
   
-  
+  /*
+  async function createTodo() {
+    if (!formData.name || !formData.description) return;
+    await API.graphql({ query: createNoteMutation, variables: { input: formData } });
+    setNotes([ ...notes, formData ]);
+    setFormData(initialFormState);}*/
+	
   async function createTodo() {
 	if (!formData.name || !formData.description) return;
 	await API.graphql({ query: createNoteMutation, variables: { input: formData } });
@@ -67,27 +90,34 @@ function App() {
     await API.graphql({ query: deleteNoteMutation, variables: { input: { id } }});
   }
   
-  
-  
-/*
-  async function fetchNotes() {
-    const apiData = await API.graphql({ query: listTodos });
-    setNotes(apiData.data.listTodos.items);
-  }
-
-  async function createTodo() {
-    if (!formData.name || !formData.description) return;
-    await API.graphql({ query: createNoteMutation, variables: { input: formData } });
-    setNotes([ ...notes, formData ]);
-    setFormData(initialFormState);
-  }
-*/
-
-
-
+ 
 //---------------------------------------------
   return (
+/*	<View className="App">
 
+      <Card>
+        <Image src={logo} className="App-logo" alt="logo" />
+		<Heading level={1}>Hello Beh Beh!</Heading>
+      </Card>
+      <Card>
+
+		<Heading level={3}>We now have Auth!</Heading>
+	  </Card>
+	  <Card>
+		<Heading level={5}>and a Link!</Heading>
+	  	<a
+          className="App-link"
+          href="https://google.com"//"https://reactjs.org"
+          target="_blank"
+          rel="noopener noreferrer" //Learn React
+        >
+          Search Google 
+        </a> 
+	  </Card>
+
+		<Button onClick={signOut}>Sign Out</Button>
+    </View> 
+*/	
     <div className="App">
 	  <img src={logo} className="App-logo" alt="logo" />
       <h1>My Notes App</h1>
@@ -120,8 +150,8 @@ function App() {
           ))
         }
       </div>
-      <withAuthenticator />
-    </div>
+      <AmplifySignOut  />
+    </div> 
   );
 }
 
