@@ -135,8 +135,8 @@ function App({ signOut }) {
         placeholder="Item description"
         value={formData.description}
       />
-      <button onClick={createTodo}>Create Note</button>
-      <div style={{marginBottom: 30}}>
+      <button onClick={createTodo}>Add Item</button>
+      <div style={{marginBottom: 100}}>
         {
           notes.map(note => (
             <div key={note.id || note.name}>
