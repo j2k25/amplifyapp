@@ -120,19 +120,19 @@ function App({ signOut }) {
 */	
     <div className="App">
 	  <img src={logo} className="App-logo" alt="logo" />
-      <h1>My Notes App</h1>
+      <h1>Our Grocery List</h1>
 	  <input
         type="file"
         onChange={onChange}
 	  />
       <input
         onChange={e => setFormData({ ...formData, 'name': e.target.value})}
-        placeholder="Note name"
+        placeholder="Item name"
         value={formData.name}
       />
       <input
         onChange={e => setFormData({ ...formData, 'description': e.target.value})}
-        placeholder="Note description"
+        placeholder="Item description"
         value={formData.description}
       />
       <button onClick={createTodo}>Create Note</button>
@@ -142,9 +142,9 @@ function App({ signOut }) {
             <div key={note.id || note.name}>
               <h2>{note.name}</h2>
               <p>{note.description}</p>
-              <button onClick={() => deleteTodo(note)}>Delete note</button>	
+              <button onClick={() => deleteTodo(note)}>Delete Item</button>	
 			  {
-				note.image && <img src={note.image} style={{width: 400}} alt="logo" />
+				note.image && <img src={note.image} style={{width: 300}} alt="logo" />
 			  }		  
             </div>
           ))
