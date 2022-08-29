@@ -136,7 +136,7 @@ function App({ signOut }) {
         value={formData.description}
       />
       <button onClick={createTodo}>Add Item</button>
-      <div style={{marginBottom: 100}}>
+      <div style={{marginBottom: 50}}>
         {
           notes.map(note => (
             <div key={note.id || note.name}>
