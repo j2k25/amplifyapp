@@ -121,20 +121,30 @@ function App({ signOut }) {
     <div className="App">
 	  <img src={logo} className="App-logo" alt="logo" />
       <h1>Our Grocery List</h1>
-	  <input
-        type="file"
-        onChange={onChange}
-	  />
+
       <input
         onChange={e => setFormData({ ...formData, 'name': e.target.value})}
         placeholder="Item name"
         value={formData.name}
       />
+	  
       <input
         onChange={e => setFormData({ ...formData, 'description': e.target.value})}
         placeholder="Item description"
         value={formData.description}
       />
+	  
+	  <br />
+	  <br />
+
+	  <input
+        type="file"
+        onChange={onChange}
+	  />
+ 
+	 <br />
+	 <br />
+
       <button onClick={createTodo}>Add Item</button>
       <div style={{marginBottom: 50}}>
         {
