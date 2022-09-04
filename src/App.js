@@ -142,8 +142,7 @@ function App({ signOut }) {
         onChange={onChange}
 	  />
  
-	 <br />
-	 <br />
+
 
       <button onClick={createTodo}>Add Item</button>
       <div style={{marginBottom: 50}}>
