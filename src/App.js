@@ -145,7 +145,7 @@ function App({ signOut }) {
 
 
       <button onClick={createTodo}>Add Item</button>
-      <div style={{marginBottom: 50}}>
+      <div style={{marginBottom: 140}}>
         {
           notes.map(note => (
             <div key={note.id || note.name}>
