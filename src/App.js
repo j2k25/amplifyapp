@@ -92,8 +92,10 @@ function App({ signOut }) {
   
  
 //---------------------------------------------
+/*
   return (
-/*	<View className="App">
+
+	<View className="App">
 
       <Card>
         <Image src={logo} className="App-logo" alt="logo" />
@@ -117,7 +119,10 @@ function App({ signOut }) {
 
 		<Button onClick={signOut}>Sign Out</Button>
     </View> 
+  );
 */	
+
+  return (
     <div className="App">
 	  <img src={logo} className="App-logo" alt="logo" />
       <h1>Our Grocery List</h1>
@@ -142,8 +147,6 @@ function App({ signOut }) {
         onChange={onChange}
 	  />
  
-
-
       <button onClick={createTodo}>Add Item</button>
       <div style={{marginBottom: 140}}>
         {
@@ -159,7 +162,7 @@ function App({ signOut }) {
           ))
         }
       </div>
-      <AmplifySignOut  />
+      <AmplifySignOut />
     </div> 
   );
 }
