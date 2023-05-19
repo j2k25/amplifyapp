@@ -26,7 +26,7 @@ import { withAuthenticator, AmplifySignOut } from '@aws-amplify/ui-react-v1';
 //import { withAuthenticator } from '@aws-amplify/ui-react';
 import { listTodos } from './graphql/queries';
 import { createTodo as createNoteMutation, deleteTodo as deleteNoteMutation } from './graphql/mutations';
-import { Storage } from 'aws-amplify'; 
+import { Storage } from 'aws-amplify';
 
 
 const initialFormState = { name: '', description: '' }
@@ -38,132 +38,132 @@ function App({ signOut }) {
   useEffect(() => {
     fetchNotes();
   }, []);
-  
+
   async function onChange(e) {
-	if (!e.target.files[0]) return
-	const file = e.target.files[0];
-	setFormData({ ...formData, image: file.name });
-	await Storage.put(file.name, file);
-	fetchNotes();
-  }	
-	
+    if (!e.target.files[0]) return
+    const file = e.target.files[0];
+    setFormData({ ...formData, image: file.name });
+    await Storage.put(file.name, file);
+    fetchNotes();
+  }
+
   /*
   async function fetchNotes() {
     const apiData = await API.graphql({ query: listTodos });
   setNotes(apiData.data.listTodos.items);}*/
-  
+
   async function fetchNotes() {
-	const apiData = await API.graphql({ query: listTodos });
-	const notesFromAPI = apiData.data.listTodos.items;
-	await Promise.all(notesFromAPI.map(async note => {
-	  if (note.image) {
-		const image = await Storage.get(note.image);
-		note.image = image;
-	  }
-	  return note;
+    const apiData = await API.graphql({ query: listTodos });
+    const notesFromAPI = apiData.data.listTodos.items;
+    await Promise.all(notesFromAPI.map(async note => {
+      if (note.image) {
+        const image = await Storage.get(note.image);
+        note.image = image;
+      }
+      return note;
     }))
-	setNotes(apiData.data.listTodos.items);
+    setNotes(apiData.data.listTodos.items);
   }
-  
+
   /*
   async function createTodo() {
     if (!formData.name || !formData.description) return;
     await API.graphql({ query: createNoteMutation, variables: { input: formData } });
     setNotes([ ...notes, formData ]);
     setFormData(initialFormState);}*/
-	
+
   async function createTodo() {
-	if (!formData.name || !formData.description) return;
-	await API.graphql({ query: createNoteMutation, variables: { input: formData } });
-	if (formData.image) {
-	  const image = await Storage.get(formData.image);
-	  formData.image = image;
-	}
-	setNotes([ ...notes, formData ]);
-	setFormData(initialFormState);
+    if (!formData.name || !formData.description) return;
+    await API.graphql({ query: createNoteMutation, variables: { input: formData } });
+    if (formData.image) {
+      const image = await Storage.get(formData.image);
+      formData.image = image;
+    }
+    setNotes([...notes, formData]);
+    setFormData(initialFormState);
   }
-  
-  
+
+
   async function deleteTodo({ id }) {
     const newNotesArray = notes.filter(note => note.id !== id);
     setNotes(newNotesArray);
-    await API.graphql({ query: deleteNoteMutation, variables: { input: { id } }});
+    await API.graphql({ query: deleteNoteMutation, variables: { input: { id } } });
   }
+
+
+  //---------------------------------------------
+  /*
+    return (
   
- 
-//---------------------------------------------
-/*
-  return (
-
-	<View className="App">
-
-      <Card>
-        <Image src={logo} className="App-logo" alt="logo" />
-		<Heading level={1}>Hello Beh Beh!</Heading>
+    <View className="App">
+  
+        <Card>
+          <Image src={logo} className="App-logo" alt="logo" />
+      <Heading level={1}>Hello Beh Beh!</Heading>
+        </Card>
+        <Card>
+  
+      <Heading level={3}>We now have Auth!</Heading>
       </Card>
       <Card>
-
-		<Heading level={3}>We now have Auth!</Heading>
-	  </Card>
-	  <Card>
-		<Heading level={5}>and a Link!</Heading>
-	  	<a
-          className="App-link"
-          href="https://google.com"//"https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer" //Learn React
-        >
-          Search Google 
-        </a> 
-	  </Card>
-
-		<Button onClick={signOut}>Sign Out</Button>
-    </View> 
-  );
-*/	
+      <Heading level={5}>and a Link!</Heading>
+        <a
+            className="App-link"
+            href="https://google.com"//"https://reactjs.org"
+            target="_blank"
+            rel="noopener noreferrer" //Learn React
+          >
+            Search Google 
+          </a> 
+      </Card>
+  
+      <Button onClick={signOut}>Sign Out</Button>
+      </View> 
+    );
+  */
 
   return (
     <div className="App">
-	  <img src={logo} className="App-logo" alt="logo" />
+      <img src={logo} className="App-logo" alt="logo" />
       <h1>Our Grocery List</h1>
 
       <input
-        onChange={e => setFormData({ ...formData, 'name': e.target.value})}
+        type="file"
+        onChange={onChange}
+      />
+
+      <input
+        onChange={e => setFormData({ ...formData, 'name': e.target.value })}
         placeholder="Item name"
         value={formData.name}
       />
-	  
+
       <input
-        onChange={e => setFormData({ ...formData, 'description': e.target.value})}
+        onChange={e => setFormData({ ...formData, 'description': e.target.value })}
         placeholder="Item description"
         value={formData.description}
       />
-	  
-	  <br />
-	  <br />
 
-	  <input
-        type="file"
-        onChange={onChange}
-	  />
- 
+      <br />
+      <br />
+
       <button onClick={createTodo}>Add Item</button>
-      <div style={{marginBottom: 140}}>
+      <div style={{ marginBottom: 140 }}>
         {
           notes.map(note => (
             <div key={note.id || note.name}>
               <h2>{note.name}</h2>
               <p>{note.description}</p>
-              <button onClick={() => deleteTodo(note)}>Delete Item</button>	
-			  {
-				note.image && <img src={note.image} style={{width: 300}} alt="logo" />
-			  }		  
+              <button onClick={() => deleteTodo(note)}>Delete Item</button>
+              {
+                note.image && <img src={note.image} style={{ width: 300 }} alt="logo" />
+              }
             </div>
           ))
         }
       </div>
       <AmplifySignOut />
-    </div> 
+    </div>
   );
 }
 
@@ -198,15 +198,15 @@ function App({ signOut }) {
 
       <Card>
         <Image src={logo} className="App-logo" alt="logo" />
-		<Heading level={1}>Hello Beh Beh!</Heading>
+    <Heading level={1}>Hello Beh Beh!</Heading>
       </Card>
       <Card>
 
-		<Heading level={3}>We now have Auth!</Heading>
-	  </Card>
-	  <Card>
-		<Heading level={5}>and a Link!</Heading>
-	  	<a
+    <Heading level={3}>We now have Auth!</Heading>
+    </Card>
+    <Card>
+    <Heading level={5}>and a Link!</Heading>
+      <a
           className="App-link"
           href="https://google.com"//"https://reactjs.org"
           target="_blank"
@@ -214,9 +214,9 @@ function App({ signOut }) {
         >
           Search Google 
         </a> 
-	  </Card>
+    </Card>
 
-		<Button onClick={signOut}>Sign Out</Button>
+    <Button onClick={signOut}>Sign Out</Button>
     </View>
   );
 }
@@ -236,7 +236,7 @@ function App() {
     <div className="App">
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
-		<h1>Hello Beh Beh!</h1>
+    <h1>Hello Beh Beh!</h1>
       </header>
     </div>
   );
@@ -245,7 +245,7 @@ function App() {
 export default App;
 
 /*------------------------------------------------
-		<img src={logo} className="App-logo" alt="logo" />
+    <img src={logo} className="App-logo" alt="logo" />
         <p>
           Edit <code>src/App.js</code> and save to reload.
         </p>
@@ -257,5 +257,5 @@ export default App;
         >
           Learn React
         </a>
-		</header>
+    </header>
 */
