@@ -62,7 +62,7 @@ function App({ signOut }) {
   return (
     <div className="App">
       <img src={logo} className="App-logo" alt="logo" />
-      <h1>Our Grocery List</h1>
+      <h1>Photo List</h1>
 
       <input
         type="file"
