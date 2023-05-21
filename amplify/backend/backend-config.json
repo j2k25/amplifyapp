@@ -7,7 +7,9 @@
           "additionalAuthenticationProviders": [],
           "defaultAuthentication": {
             "apiKeyConfig": {
-              "apiKeyExpirationDays": 7
+              "apiKeyExpirationDate": "2023-05-28T08:50:49.515Z",
+              "apiKeyExpirationDays": 7,
+              "description": "amplifyapp-react"
             },
             "authenticationType": "API_KEY"
           }

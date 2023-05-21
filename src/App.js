@@ -1,28 +1,8 @@
-/*
-import React, { useState, useEffect } from 'react'; 
-import './App.css'; 
-import { API } from 'aws-amplify'; 
-import { withAuthenticator } from '@aws-amplify/ui-react'; 
-import { listNotes } from './graphql/queries'; 
-import { createNote as createNoteMutation, deleteNote as deleteNoteMutation } from './graphql/mutations';
-*/
-
 import logo from "./logo.svg";
 import "@aws-amplify/ui-react/styles.css";
-/*
-import {
-  //withAuthenticator,
-  Button,
-  Heading,
-  Image,
-  View,
-  Card,
-} from "@aws-amplify/ui-react";*/
-
 import React, { useState, useEffect } from 'react';
 import './App.css';
 import { API } from 'aws-amplify';
-import { withAuthenticator, AmplifySignOut } from '@aws-amplify/ui-react-v1';
 import { withAuthenticator } from '@aws-amplify/ui-react';
 import { listTodos } from './graphql/queries';
 import { createTodo as createNoteMutation, deleteTodo as deleteNoteMutation } from './graphql/mutations';
@@ -47,11 +27,6 @@ function App({ signOut }) {
     fetchNotes();
   }
 
-  /*
-  async function fetchNotes() {
-    const apiData = await API.graphql({ query: listTodos });
-  setNotes(apiData.data.listTodos.items);}*/
-
   async function fetchNotes() {
     const apiData = await API.graphql({ query: listTodos });
     const notesFromAPI = apiData.data.listTodos.items;
@@ -64,13 +39,6 @@ function App({ signOut }) {
     }))
     setNotes(apiData.data.listTodos.items);
   }
-
-  /*
-  async function createTodo() {
-    if (!formData.name || !formData.description) return;
-    await API.graphql({ query: createNoteMutation, variables: { input: formData } });
-    setNotes([ ...notes, formData ]);
-    setFormData(initialFormState);}*/
 
   async function createTodo() {
     if (!formData.name || !formData.description) return;
@@ -90,37 +58,6 @@ function App({ signOut }) {
     await API.graphql({ query: deleteNoteMutation, variables: { input: { id } } });
   }
 
-
-  //---------------------------------------------
-  /*
-    return (
-  
-    <View className="App">
-  
-        <Card>
-          <Image src={logo} className="App-logo" alt="logo" />
-      <Heading level={1}>Hello Beh Beh!</Heading>
-        </Card>
-        <Card>
-  
-      <Heading level={3}>We now have Auth!</Heading>
-      </Card>
-      <Card>
-      <Heading level={5}>and a Link!</Heading>
-        <a
-            className="App-link"
-            href="https://google.com"//"https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer" //Learn React
-          >
-            Search Google 
-          </a> 
-      </Card>
-  
-      <Button onClick={signOut}>Sign Out</Button>
-      </View> 
-    );
-  */
 
   return (
     <div className="App">
@@ -162,100 +99,9 @@ function App({ signOut }) {
           ))
         }
       </div>
-      <AmplifySignOut />
+      <withAuthenticator />
     </div>
   );
 }
 
 export default withAuthenticator(App);
-
-
-/*
-import React, { useState, useEffect } from 'react'; 
-import './App.css'; import { API } from 'aws-amplify'; 
-import { withAuthenticator } from '@aws-amplify/ui-react'; 
-import { listNotes } from './graphql/queries'; 
-import { createNote as createNoteMutation, deleteNote as deleteNoteMutation } from './graphql/mutations';
-*/
-
-
-
-
-/*
-import "@aws-amplify/ui-react/styles.css";
-import {
-  withAuthenticator,
-  Button,
-  Heading,
-  Image,
-  View,
-  Card,
-} from "@aws-amplify/ui-react";
-
-function App({ signOut }) {
-  return (
-    <View className="App">
-
-      <Card>
-        <Image src={logo} className="App-logo" alt="logo" />
-    <Heading level={1}>Hello Beh Beh!</Heading>
-      </Card>
-      <Card>
-
-    <Heading level={3}>We now have Auth!</Heading>
-    </Card>
-    <Card>
-    <Heading level={5}>and a Link!</Heading>
-      <a
-          className="App-link"
-          href="https://google.com"//"https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer" //Learn React
-        >
-          Search Google 
-        </a> 
-    </Card>
-
-    <Button onClick={signOut}>Sign Out</Button>
-    </View>
-  );
-}
-
-export default withAuthenticator(App);
-
-
-/*----------------------------------------------------------------------------------------------------
-
-import './App.css';
-
-
-
-
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-    <h1>Hello Beh Beh!</h1>
-      </header>
-    </div>
-  );
-}
-
-export default App;
-
-/*------------------------------------------------
-    <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-    </header>
-*/
