@@ -99,7 +99,7 @@ function App({ signOut }) {
           ))
         }
       </div>
-      <withAuthenticator />
+      <button onClick={signOut}>Sign Out</button>
     </div>
   );
 }
