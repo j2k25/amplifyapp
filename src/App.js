@@ -1,261 +1,133 @@
-/*
-import React, { useState, useEffect } from 'react'; 
-import './App.css'; 
-import { API } from 'aws-amplify'; 
-import { withAuthenticator } from '@aws-amplify/ui-react'; 
-import { listNotes } from './graphql/queries'; 
-import { createNote as createNoteMutation, deleteNote as deleteNoteMutation } from './graphql/mutations';
-*/
-
-import logo from "./logo.svg";
+import React, { useState, useEffect } from "react";
+import "./App.css";
 import "@aws-amplify/ui-react/styles.css";
-/*
+import { API, Storage } from 'aws-amplify';
 import {
-  //withAuthenticator,
   Button,
+  Flex,
   Heading,
-  Image,
+  Text,
+  TextField,
   View,
-  Card,
-} from "@aws-amplify/ui-react";*/
+  withAuthenticator,
+} from '@aws-amplify/ui-react';
+import { listNotes } from "./graphql/queries";
+import {
+  createNote as createNoteMutation,
+  deleteNote as deleteNoteMutation,
+} from "./graphql/mutations";
 
-import React, { useState, useEffect } from 'react';
-import './App.css';
-import { API } from 'aws-amplify';
-import { withAuthenticator, AmplifySignOut } from '@aws-amplify/ui-react-v1';
-//import { withAuthenticator } from '@aws-amplify/ui-react';
-import { listTodos } from './graphql/queries';
-import { createTodo as createNoteMutation, deleteTodo as deleteNoteMutation } from './graphql/mutations';
-import { Storage } from 'aws-amplify';
-
-
-const initialFormState = { name: '', description: '' }
-
-function App({ signOut }) {
+const App = ({ signOut }) => {
   const [notes, setNotes] = useState([]);
-  const [formData, setFormData] = useState(initialFormState);
 
   useEffect(() => {
     fetchNotes();
   }, []);
 
-  async function onChange(e) {
-    if (!e.target.files[0]) return
-    const file = e.target.files[0];
-    setFormData({ ...formData, image: file.name });
-    await Storage.put(file.name, file);
-    fetchNotes();
-  }
-
-  /*
   async function fetchNotes() {
-    const apiData = await API.graphql({ query: listTodos });
-  setNotes(apiData.data.listTodos.items);}*/
-
-  async function fetchNotes() {
-    const apiData = await API.graphql({ query: listTodos });
-    const notesFromAPI = apiData.data.listTodos.items;
-    await Promise.all(notesFromAPI.map(async note => {
-      if (note.image) {
-        const image = await Storage.get(note.image);
-        note.image = image;
-      }
-      return note;
-    }))
-    setNotes(apiData.data.listTodos.items);
-  }
-
-  /*
-  async function createTodo() {
-    if (!formData.name || !formData.description) return;
-    await API.graphql({ query: createNoteMutation, variables: { input: formData } });
-    setNotes([ ...notes, formData ]);
-    setFormData(initialFormState);}*/
-
-  async function createTodo() {
-    if (!formData.name || !formData.description) return;
-    await API.graphql({ query: createNoteMutation, variables: { input: formData } });
-    if (formData.image) {
-      const image = await Storage.get(formData.image);
-      formData.image = image;
-    }
-    setNotes([...notes, formData]);
-    setFormData(initialFormState);
-  }
-
-
-  async function deleteTodo({ id }) {
-    const newNotesArray = notes.filter(note => note.id !== id);
-    setNotes(newNotesArray);
-    await API.graphql({ query: deleteNoteMutation, variables: { input: { id } } });
-  }
-
-
-  //---------------------------------------------
-  /*
-    return (
-  
-    <View className="App">
-  
-        <Card>
-          <Image src={logo} className="App-logo" alt="logo" />
-      <Heading level={1}>Hello Beh Beh!</Heading>
-        </Card>
-        <Card>
-  
-      <Heading level={3}>We now have Auth!</Heading>
-      </Card>
-      <Card>
-      <Heading level={5}>and a Link!</Heading>
-        <a
-            className="App-link"
-            href="https://google.com"//"https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer" //Learn React
-          >
-            Search Google 
-          </a> 
-      </Card>
-  
-      <Button onClick={signOut}>Sign Out</Button>
-      </View> 
-    );
-  */
-
-  return (
-    <div className="App">
-      <img src={logo} className="App-logo" alt="logo" />
-      <h1>Our Grocery List</h1>
-
-      <input
-        type="file"
-        onChange={onChange}
-      />
-
-      <input
-        onChange={e => setFormData({ ...formData, 'name': e.target.value })}
-        placeholder="Item name"
-        value={formData.name}
-      />
-
-      <input
-        onChange={e => setFormData({ ...formData, 'description': e.target.value })}
-        placeholder="Item description"
-        value={formData.description}
-      />
-
-      <br />
-      <br />
-
-      <button onClick={createTodo}>Add Item</button>
-      <div style={{ marginBottom: 140 }}>
-        {
-          notes.map(note => (
-            <div key={note.id || note.name}>
-              <h2>{note.name}</h2>
-              <p>{note.description}</p>
-              <button onClick={() => deleteTodo(note)}>Delete Item</button>
-              {
-                note.image && <img src={note.image} style={{ width: 300 }} alt="logo" />
-              }
-            </div>
-          ))
+    const apiData = await API.graphql({ query: listNotes });
+    const notesFromAPI = apiData.data.listNotes.items;
+    await Promise.all(
+      notesFromAPI.map(async (note) => {
+        if (note.image) {
+          const url = await Storage.get(note.name);
+          note.image = url;
         }
-      </div>
-      <AmplifySignOut />
-    </div>
-  );
-}
+        return note;
+      })
+    );
+    setNotes(notesFromAPI);
+  }
 
-export default withAuthenticator(App);
+  async function createNote(event) {
+    event.preventDefault();
+    const form = new FormData(event.target);
+    const image = form.get("image");
+    const data = {
+      name: form.get("name"),
+      description: form.get("description"),
+      image: image.name,
+    };
+    if (!!data.image) await Storage.put(data.name, image);
+    await API.graphql({
+      query: createNoteMutation,
+      variables: { input: data },
+    });
+    fetchNotes();
+    event.target.reset();
+  }
 
+  async function deleteNote({ id, name }) {
+    const newNotes = notes.filter((note) => note.id !== id);
+    setNotes(newNotes);
+    await Storage.remove(name);
+    await API.graphql({
+      query: deleteNoteMutation,
+      variables: { input: { id } },
+    });
+  }
 
-/*
-import React, { useState, useEffect } from 'react'; 
-import './App.css'; import { API } from 'aws-amplify'; 
-import { withAuthenticator } from '@aws-amplify/ui-react'; 
-import { listNotes } from './graphql/queries'; 
-import { createNote as createNoteMutation, deleteNote as deleteNoteMutation } from './graphql/mutations';
-*/
-
-
-
-
-/*
-import "@aws-amplify/ui-react/styles.css";
-import {
-  withAuthenticator,
-  Button,
-  Heading,
-  Image,
-  View,
-  Card,
-} from "@aws-amplify/ui-react";
-
-function App({ signOut }) {
   return (
     <View className="App">
-
-      <Card>
-        <Image src={logo} className="App-logo" alt="logo" />
-    <Heading level={1}>Hello Beh Beh!</Heading>
-      </Card>
-      <Card>
-
-    <Heading level={3}>We now have Auth!</Heading>
-    </Card>
-    <Card>
-    <Heading level={5}>and a Link!</Heading>
-      <a
-          className="App-link"
-          href="https://google.com"//"https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer" //Learn React
-        >
-          Search Google 
-        </a> 
-    </Card>
-
-    <Button onClick={signOut}>Sign Out</Button>
+      <Heading level={1}>My Notes App</Heading>
+      <View as="form" margin="3rem 0" onSubmit={createNote}>
+        <Flex direction="row" justifyContent="center">
+          <TextField
+            name="name"
+            placeholder="Note Name"
+            label="Note Name"
+            labelHidden
+            variation="quiet"
+            required
+          />
+          <TextField
+            name="description"
+            placeholder="Note Description"
+            label="Note Description"
+            labelHidden
+            variation="quiet"
+            required
+          />
+          <Button type="submit" variation="primary">
+            Create Note
+          </Button>
+        </Flex>
+      </View>
+      <Heading level={2}>Current Notes</Heading>
+      <View
+        name="image"
+        as="input"
+        type="file"
+        style={{ alignSelf: "end" }}
+      />
+      <View margin="3rem 0">
+        {notes.map((note) => (
+          <Flex
+            key={note.id || note.name}
+            direction="row"
+            justifyContent="center"
+            alignItems="center"
+          >
+            <Text as="strong" fontWeight={700}>
+              {note.name}
+            </Text>
+            <Text as="span">{note.description}</Text>
+            {note.image && (
+              <Image
+                src={note.image}
+                alt={`visual aid for ${notes.name}`}
+                style={{ width: 400 }}
+              />
+            )}
+            <Button variation="link" onClick={() => deleteNote(note)}>
+              Delete note
+            </Button>
+          </Flex>
+        ))}
+      </View>
+      <Button onClick={signOut}>Sign Out</Button>
     </View>
   );
-}
+};
 
 export default withAuthenticator(App);
-
-
-/*----------------------------------------------------------------------------------------------------
-
-import './App.css';
-
-
-
-
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-    <h1>Hello Beh Beh!</h1>
-      </header>
-    </div>
-  );
-}
-
-export default App;
-
-/*------------------------------------------------
-    <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-    </header>
-*/
